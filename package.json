@@ -9,8 +9,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "serve -s dist -l 3000",
-    "start:node": "node server.js"
+    "start": "node server.js",
+    "start:serve": "serve -s dist -l 3000"
   },
   "dependencies": {
     "@tanstack/react-table": "^8.21.3",
