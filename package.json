@@ -9,8 +9,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "serve -s dist",
-    "start:serve": "serve -s dist -p $PORT"
+    "start": "serve -s dist -l 3000",
+    "start:node": "node server.js"
   },
   "dependencies": {
     "@tanstack/react-table": "^8.21.3",
@@ -20,7 +20,7 @@
     "bootswatch": "^5.3.6",
     "chart.js": "^4.5.0",
     "dotenv": "^16.5.0",
-    "express": "^5.1.0",
+    "express": "^4.21.2",
     "leaflet": "^1.9.4",
     "leaflet.fullscreen": "^2.4.0",
     "react": "^18.2.0",
