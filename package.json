@@ -3,13 +3,13 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://psarasua.github.io/Mapas-Clientes",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "node server.js",
+    "start": "node server-simple.cjs",
+    "start:es": "node server.js",
     "start:serve": "serve -s dist -l 3000"
   },
   "dependencies": {
