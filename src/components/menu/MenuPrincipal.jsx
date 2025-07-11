@@ -5,7 +5,7 @@
 import React, { useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Navbar, Nav, Container } from "react-bootstrap";
-import { isAuthenticated, logout } from "../../services/auth";
+import { logout } from "../../services/auth";
 
 // Componente de menú de navegación principal
 const MenuPrincipal = React.memo(function MenuPrincipal({ onLogout }) {

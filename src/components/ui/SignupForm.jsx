@@ -17,7 +17,7 @@ const SignupForm = ({ onSignup }) => {
     setError(null);
     setSuccess(false);
     try {
-      const response = await api.post('/auth/signup', { usuario, contrasenia, email });
+      await api.post('/auth/signup', { usuario, contrasenia, email });
       toast.success('Usuario registrado correctamente', { closeButton: true });
       setSuccess(true);
       onSignup && onSignup();

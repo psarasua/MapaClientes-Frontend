@@ -66,7 +66,7 @@ const ClientesPanel = React.memo(function ClientesPanel() {
         await apiFetch(`/clientes/${id}`, { method: "DELETE" });
         fetchClientes();
         toast.success('Cliente eliminado correctamente', { closeButton: true });
-      } catch (e) {
+      } catch {
         toast.error('Error al eliminar el cliente', { closeButton: true });
       } finally {
         setLoading(false);
