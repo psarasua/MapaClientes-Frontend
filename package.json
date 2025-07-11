@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "start": "vite build && vite preview",
+    "start": "vite preview --port $PORT",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "railway-build": "npm run build"
   },
   "dependencies": {
     "@tanstack/react-table": "^8.21.3",
