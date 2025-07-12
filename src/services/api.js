@@ -1,7 +1,6 @@
 // api.js
-// Servicio centralizado para realizar peticiones HTTP seguras al backend.
+// Servicio centralizado para realizar peticiones HTTP al backend.
 // Usa fetch, variables de entorno para la URL base y maneja errores globalmente.
-// Facilita la reutilización y la protección de datos sensibles.
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
@@ -13,7 +12,6 @@ export async function apiFetch(endpoint, options = {}) {
       'Content-Type': 'application/json',
       ...(options.headers || {})
     },
-    credentials: 'include', // Para cookies/CSRF si es necesario
   });
   if (!response.ok) {
     const errorMsg = `Error ${response.status}: ${response.statusText}`;
