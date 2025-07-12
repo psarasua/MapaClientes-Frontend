@@ -6,11 +6,13 @@ import DiasEntregaPanel from "./components/diasEntrega/DiasEntregaPanel";
 import Menu from "./components/menu/MenuPrincipal";
 import { Toaster } from "sonner";
 import ConfiguracionPanel from "./components/configuracion/ConfiguracionPanel";
+import ConnectionStatus from "./components/ui/ConnectionStatus";
 
 const App = () => {
   return (
     <BrowserRouter>
       <Menu />
+      <ConnectionStatus />
       <Toaster position="top-right" richColors />
       <Routes>
         <Route path="/clientes" element={<ClientesPanel />} />

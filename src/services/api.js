@@ -32,6 +32,37 @@ const api = {
   get: async (endpoint) => {
     return apiFetch(endpoint);
   },
+  // Método específico para verificar la salud del backend
+  health: async () => {
+    try {
+      // Intenta diferentes endpoints comunes para verificar la salud
+      const endpoints = ['/health', '/status', '/ping', '/'];
+      
+      for (const endpoint of endpoints) {
+        try {
+          const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+          });
+          
+          if (response.ok) {
+            return { 
+              status: 'connected', 
+              endpoint,
+              timestamp: new Date().toISOString()
+            };
+          }
+        } catch (error) {
+          // Continúa con el siguiente endpoint
+          continue;
+        }
+      }
+      
+      throw new Error('Ningún endpoint de salud disponible');
+    } catch (error) {
+      throw new Error(`Error de conexión: ${error.message}`);
+    }
+  },
   // Puedes agregar put, delete, etc. si lo necesitas
 };
 
