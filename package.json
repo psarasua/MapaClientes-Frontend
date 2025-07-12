@@ -5,11 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "start": "serve dist -s",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "railway-build": "npm run build"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@tanstack/react-table": "^8.21.3",
@@ -18,7 +16,6 @@
     "bootstrap-icons": "^1.13.1",
     "bootswatch": "^5.3.6",
     "chart.js": "^4.5.0",
-    "dotenv": "^16.5.0",
     "leaflet": "^1.9.4",
     "leaflet.fullscreen": "^2.4.0",
     "react": "^18.2.0",
@@ -32,7 +29,6 @@
     "react-router-dom": "^7.6.2",
     "react-select": "^5.10.1",
     "screenfull": "^6.0.2",
-    "serve": "^14.2.4",
     "sonner": "^2.0.5",
     "sweetalert2": "^11.22.1",
     "sweetalert2-react-content": "^5.1.0"
