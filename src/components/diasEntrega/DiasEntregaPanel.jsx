@@ -23,12 +23,20 @@ const DiasEntregaPanel = React.memo(function DiasEntregaPanel() {
   const fetchDias = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await apiFetch("/dias_entrega");
-      setDias(data);
+      const response = await apiFetch("/dias_entrega");
+      // Extraer datos de manera más robusta
+      let diasData = [];
+      if (Array.isArray(response)) {
+        diasData = response;
+      } else if (response && response.data) {
+        diasData = Array.isArray(response.data.data) ? response.data.data : 
+                  Array.isArray(response.data) ? response.data : [];
+      }
+      setDias(diasData);
     } catch (error) {
       console.error('Error al obtener días de entrega:', error);
       // Mantener los datos existentes para que la aplicación no se caiga
-      setDias(prev => prev || []);
+      setDias(prev => Array.isArray(prev) ? prev : []);
     } finally {
       setLoading(false);
     }

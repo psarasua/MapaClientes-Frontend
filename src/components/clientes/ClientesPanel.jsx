@@ -34,8 +34,15 @@ const ClientesPanel = React.memo(function ClientesPanel() {
     setConnectionError(false);
     try {
       const response = await apiFetch('/clientes');
-      // Soporta tanto {data: [...]} como array plano
-      const clientesData = Array.isArray(response) ? response : (response.data || []);
+      // Extraer datos de manera más robusta
+      let clientesData = [];
+      if (Array.isArray(response)) {
+        clientesData = response;
+      } else if (response && response.data) {
+        clientesData = Array.isArray(response.data.data) ? response.data.data : 
+                     Array.isArray(response.data) ? response.data : [];
+      }
+      
       setClientes(clientesData);
       if (response.info) {
         toast.info(response.info, { closeButton: true });
@@ -45,7 +52,7 @@ const ClientesPanel = React.memo(function ClientesPanel() {
       setConnectionError(true);
       toast.error('No se pudo conectar al servidor. Verificar conexión.', { closeButton: true });
       // Mantener los datos existentes para que la aplicación no se caiga
-      setClientes(prev => prev || []);
+      setClientes(prev => Array.isArray(prev) ? prev : []);
     } finally {
       setLoading(false);
     }
@@ -136,7 +143,7 @@ const ClientesPanel = React.memo(function ClientesPanel() {
   // Filtro avanzado: búsqueda por nombre y estado activo/inactivo
   const [estado, setEstado] = useState("");
 
-  const filteredData = clientes.filter(c => {
+  const filteredData = (Array.isArray(clientes) ? clientes : []).filter(c => {
     const matchNombre = filter.trim()
       ? c.nombre && c.nombre.toLowerCase().includes(filter.toLowerCase())
       : true;
@@ -207,7 +214,7 @@ const ClientesPanel = React.memo(function ClientesPanel() {
           dense
         />
         <div className="text-center text-secondary mt-2 mb-4" style={{fontSize: 16}}>
-          Mostrando {filteredData.length} de {clientes.length} clientes
+          Mostrando {filteredData.length} de {Array.isArray(clientes) ? clientes.length : 0} clientes
         </div>
         {/* Modales */}
         {showModal && (

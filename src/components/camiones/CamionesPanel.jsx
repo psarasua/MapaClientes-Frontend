@@ -28,12 +28,20 @@ const CamionesPanel = React.memo(function CamionesPanel() {
   const fetchCamiones = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await apiFetch("/camiones");
-      setCamiones(data);
+      const response = await apiFetch("/camiones");
+      // Extraer datos de manera más robusta
+      let camionesData = [];
+      if (Array.isArray(response)) {
+        camionesData = response;
+      } else if (response && response.data) {
+        camionesData = Array.isArray(response.data.data) ? response.data.data : 
+                     Array.isArray(response.data) ? response.data : [];
+      }
+      setCamiones(camionesData);
     } catch (error) {
       console.error('Error al obtener camiones:', error);
       // Mantener los datos existentes para que la aplicación no se caiga
-      setCamiones(prev => prev || []);
+      setCamiones(prev => Array.isArray(prev) ? prev : []);
     } finally {
       setLoading(false);
     }
