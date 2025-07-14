@@ -10,8 +10,12 @@ const ConfiguracionPanel = () => {
 
   const verificarBackend = async () => {
     try {
-      await apiFetch("/ping");
-      toast.success("Conexión al backend exitosa", { closeButton: true });
+      const res = await apiFetch("/ping");
+      if (res && res.success) {
+        toast.success("Conexión al backend exitosa", { closeButton: true });
+      } else {
+        throw new Error("Respuesta del backend no válida");
+      }
     } catch {
       toast.error("No se pudo conectar al backend", { closeButton: true });
     }
@@ -19,11 +23,11 @@ const ConfiguracionPanel = () => {
 
   const verificarDB = async () => {
     try {
-      const res = await apiFetch("/ping?db=1");
-      if (res && res.db) {
+      const res = await apiFetch("/ping");
+      if (res && res.success && res.data && res.data.database && res.data.database.status === "connected") {
         toast.success("Conexión a la base de datos exitosa", { closeButton: true });
       } else {
-        throw new Error();
+        throw new Error("Estado de base de datos no disponible");
       }
     } catch {
       toast.error("No se pudo conectar a la base de datos", { closeButton: true });
