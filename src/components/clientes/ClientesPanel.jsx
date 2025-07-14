@@ -92,34 +92,37 @@ const ClientesPanel = React.memo(function ClientesPanel() {
 
   // Columnas para react-data-table-component
   const columns = [
-    { name: 'ID', selector: row => row.id, sortable: true, width: '70px' },
-    { name: 'Nombre', selector: row => row.nombre, sortable: true },
-    { name: 'Razón Social', selector: row => row.razon, sortable: true },
-    { name: 'Código Alternativo', selector: row => row.codigo_alternativo, sortable: true },
-    { name: 'Dirección', selector: row => row.direccion, sortable: true },
-    { name: 'Teléfono', selector: row => row.telefono, sortable: true },
-    { name: 'RUT', selector: row => row.rut, sortable: true },
-    { name: 'Activo', selector: row => row.activo ? 'Sí' : 'No', sortable: true, width: '80px' },
+    { name: 'ID', selector: row => row?.id || '', sortable: true, width: '70px' },
+    { name: 'Nombre', selector: row => row?.nombre || '', sortable: true },
+    { name: 'Razón Social', selector: row => row?.razon || '', sortable: true },
+    { name: 'Código Alternativo', selector: row => row?.codigo_alternativo || '', sortable: true },
+    { name: 'Dirección', selector: row => row?.direccion || '', sortable: true },
+    { name: 'Teléfono', selector: row => row?.telefono || '', sortable: true },
+    { name: 'RUT', selector: row => row?.rut || '', sortable: true },
+    { name: 'Activo', selector: row => row?.activo ? 'Sí' : 'No', sortable: true, width: '80px' },
     {
       name: 'Ubicación',
-      selector: row => row.x && row.y,
-      cell: row => (
-        <button
-          type="button"
-          className="bg-transparent border-0 p-0 m-0 d-flex align-items-center justify-content-center"
-          style={{ width: 36, height: 36, cursor: row.x && row.y ? 'pointer' : 'not-allowed' }}
-          title={row.x && row.y ? `X: ${row.x}, Y: ${row.y}` : 'Sin coordenadas'}
-          aria-label={row.x && row.y ? 'Ver ubicación en el mapa' : 'Sin ubicación'}
-          tabIndex={row.x && row.y ? 0 : -1}
-          disabled={!(row.x && row.y)}
-          onClick={row.x && row.y ? () => { setMapCoords({ lat: row.y, lng: row.x }); setShowModal(true); } : undefined}
-        >
-          <i
-            className="bi bi-flag-fill"
-            style={{ fontSize: 18, color: row.x && row.y ? '#198754' : '#dc3545' }}
-          ></i>
-        </button>
-      ),
+      selector: row => !!(row?.x && row?.y),
+      cell: row => {
+        const hasCoords = row?.x && row?.y;
+        return (
+          <button
+            type="button"
+            className="bg-transparent border-0 p-0 m-0 d-flex align-items-center justify-content-center"
+            style={{ width: 36, height: 36, cursor: hasCoords ? 'pointer' : 'not-allowed' }}
+            title={hasCoords ? `X: ${row.x}, Y: ${row.y}` : 'Sin coordenadas'}
+            aria-label={hasCoords ? 'Ver ubicación en el mapa' : 'Sin ubicación'}
+            tabIndex={hasCoords ? 0 : -1}
+            disabled={!hasCoords}
+            onClick={hasCoords ? () => { setMapCoords({ lat: row.y, lng: row.x }); setShowModal(true); } : undefined}
+          >
+            <i
+              className="bi bi-flag-fill"
+              style={{ fontSize: 18, color: hasCoords ? '#198754' : '#dc3545' }}
+            ></i>
+          </button>
+        );
+      },
       sortable: false,
       width: '56px',
     },
@@ -127,10 +130,22 @@ const ClientesPanel = React.memo(function ClientesPanel() {
       name: 'Acciones',
       cell: row => (
         <div className="d-flex gap-2">
-          <Button variant="outline-warning" size="sm" title={`Editar cliente ${row.nombre}`} aria-label={`Editar cliente ${row.nombre}`} onClick={() => handleRowClick(row)}>
+          <Button 
+            variant="outline-warning" 
+            size="sm" 
+            title={`Editar cliente ${row?.nombre || 'sin nombre'}`} 
+            aria-label={`Editar cliente ${row?.nombre || 'sin nombre'}`} 
+            onClick={() => handleRowClick(row)}
+          >
             <FaPencilAlt aria-hidden="true" />
           </Button>
-          <Button variant="outline-danger" size="sm" title={`Eliminar cliente ${row.nombre}`} aria-label={`Eliminar cliente ${row.nombre}`} onClick={() => handleDeleteCliente(row.id, row.nombre)}>
+          <Button 
+            variant="outline-danger" 
+            size="sm" 
+            title={`Eliminar cliente ${row?.nombre || 'sin nombre'}`} 
+            aria-label={`Eliminar cliente ${row?.nombre || 'sin nombre'}`} 
+            onClick={() => handleDeleteCliente(row?.id, row?.nombre || 'sin nombre')}
+          >
             <FaTrash aria-hidden="true" />
           </Button>
         </div>
@@ -145,7 +160,7 @@ const ClientesPanel = React.memo(function ClientesPanel() {
 
   const filteredData = (Array.isArray(clientes) ? clientes : []).filter(c => {
     const matchNombre = filter.trim()
-      ? c.nombre && c.nombre.toLowerCase().includes(filter.toLowerCase())
+      ? c.nombre && typeof c.nombre === 'string' && c.nombre.toLowerCase().includes(filter.toLowerCase())
       : true;
     const matchEstado = estado === ""
       ? true
