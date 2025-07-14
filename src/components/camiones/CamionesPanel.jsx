@@ -10,6 +10,7 @@ import { Button } from "react-bootstrap";
 import TablaPanel from "../ui/TablaPanel";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { toast, Toaster } from 'sonner';
 
 // Envuelve el componente con React.memo para evitar renders innecesarios si las props no cambian
 const CamionesPanel = React.memo(function CamionesPanel() {
@@ -90,9 +91,19 @@ const CamionesPanel = React.memo(function CamionesPanel() {
       });
       if (result.isConfirmed) {
         setLoading(true);
-        await apiFetch(`/camiones/${id}`, { method: "DELETE" });
-        fetchCamiones();
-        MySwal.fire('Eliminado', 'El camión fue eliminado correctamente.', 'success');
+        try {
+          await apiFetch(`/camiones/${id}`, { method: "DELETE" });
+          fetchCamiones();
+          // Usar toast en lugar de SweetAlert para la confirmación
+          toast.success(`Camión "${descripcion}" eliminado correctamente`, { 
+            closeButton: true,
+            duration: 3000 
+          });
+        } catch {
+          toast.error('Error al eliminar el camión', { closeButton: true });
+        } finally {
+          setLoading(false);
+        }
       }
     },
     [fetchCamiones, MySwal]
@@ -128,6 +139,7 @@ const CamionesPanel = React.memo(function CamionesPanel() {
   // Renderizado principal
   return (
     <div className="container my-4" style={{ maxWidth: 900 }}>
+      <Toaster richColors position="top-right" />
       <h2 className="text-center mb-4 mt-3" id="camiones-titulo" tabIndex={0}>
         Camiones
       </h2>
