@@ -7,21 +7,24 @@ import Menu from "./components/menu/MenuPrincipal";
 import { Toaster } from "sonner";
 import ConfiguracionPanel from "./components/configuracion/ConfiguracionPanel";
 import ConnectionStatus from "./components/ui/ConnectionStatus";
+import ErrorBoundary from "./components/ui/ErrorBoundary";
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <Menu />
-      <ConnectionStatus />
-      <Toaster position="top-right" richColors />
-      <Routes>
-        <Route path="/clientes" element={<ClientesPanel />} />
-        <Route path="/camiones" element={<CamionesPanel />} />
-        <Route path="/dias-entrega" element={<DiasEntregaPanel />} />
-        <Route path="/configuracion" element={<ConfiguracionPanel />} />
-        <Route path="*" element={<Navigate to="/clientes" />} />
-      </Routes>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <Menu />
+        <ConnectionStatus />
+        <Toaster position="top-right" richColors />
+        <Routes>
+          <Route path="/clientes" element={<ClientesPanel />} />
+          <Route path="/camiones" element={<CamionesPanel />} />
+          <Route path="/dias-entrega" element={<DiasEntregaPanel />} />
+          <Route path="/configuracion" element={<ConfiguracionPanel />} />
+          <Route path="*" element={<Navigate to="/clientes" />} />
+        </Routes>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 };
 

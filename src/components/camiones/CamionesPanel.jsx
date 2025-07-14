@@ -27,9 +27,16 @@ const CamionesPanel = React.memo(function CamionesPanel() {
   // useCallback para evitar recrear la función en cada render
   const fetchCamiones = useCallback(async () => {
     setLoading(true);
-    const data = await apiFetch("/camiones");
-    setCamiones(data);
-    setLoading(false);
+    try {
+      const data = await apiFetch("/camiones");
+      setCamiones(data);
+    } catch (error) {
+      console.error('Error al obtener camiones:', error);
+      // Mantener los datos existentes para que la aplicación no se caiga
+      setCamiones(prev => prev || []);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   // Carga los camiones al montar el componente

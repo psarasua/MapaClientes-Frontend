@@ -22,9 +22,16 @@ const DiasEntregaPanel = React.memo(function DiasEntregaPanel() {
 
   const fetchDias = useCallback(async () => {
     setLoading(true);
-    const data = await apiFetch("/dias_entrega");
-    setDias(data);
-    setLoading(false);
+    try {
+      const data = await apiFetch("/dias_entrega");
+      setDias(data);
+    } catch (error) {
+      console.error('Error al obtener días de entrega:', error);
+      // Mantener los datos existentes para que la aplicación no se caiga
+      setDias(prev => prev || []);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {

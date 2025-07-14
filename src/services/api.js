@@ -6,19 +6,30 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://mapaclientesbacken
 
 export async function apiFetch(endpoint, options = {}) {
   const url = `${API_BASE_URL}${endpoint}`;
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options.headers || {})
-    },
-  });
-  if (!response.ok) {
-    const errorMsg = `Error ${response.status}: ${response.statusText}`;
-    throw new Error(errorMsg);
+  
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(options.headers || {})
+      },
+    });
+    
+    if (!response.ok) {
+      const errorMsg = `Error ${response.status}: ${response.statusText}`;
+      throw new Error(errorMsg);
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    // Distinguir entre errores de red y otros errores
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Error de conexión: No se pudo conectar al servidor');
+    }
+    throw error;
   }
-  const data = await response.json();
-  return data;
 }
 
 // Métodos cortos para post y get
@@ -52,7 +63,7 @@ const api = {
               timestamp: new Date().toISOString()
             };
           }
-        } catch (error) {
+        } catch {
           // Continúa con el siguiente endpoint
           continue;
         }

@@ -14,12 +14,14 @@ import ClienteModalFormulario from "./ClienteModalFormulario";
 import { Button, Spinner, Form } from "react-bootstrap";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { Toaster, toast } from 'sonner';
+import OfflineMessage from '../ui/OfflineMessage';
 
 const MySwal = withReactContent(Swal);
 
 const ClientesPanel = React.memo(function ClientesPanel() {
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [connectionError, setConnectionError] = useState(false);
   const [filter, setFilter] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [mapCoords, setMapCoords] = useState({ lat: null, lng: null });
@@ -29,6 +31,7 @@ const ClientesPanel = React.memo(function ClientesPanel() {
 
   const fetchClientes = useCallback(async () => {
     setLoading(true);
+    setConnectionError(false);
     try {
       const response = await apiFetch('/clientes');
       // Soporta tanto {data: [...]} como array plano
@@ -37,6 +40,12 @@ const ClientesPanel = React.memo(function ClientesPanel() {
       if (response.info) {
         toast.info(response.info, { closeButton: true });
       }
+    } catch (error) {
+      console.error('Error al obtener clientes:', error);
+      setConnectionError(true);
+      toast.error('No se pudo conectar al servidor. Verificar conexión.', { closeButton: true });
+      // Mantener los datos existentes para que la aplicación no se caiga
+      setClientes(prev => prev || []);
     } finally {
       setLoading(false);
     }
@@ -175,6 +184,14 @@ const ClientesPanel = React.memo(function ClientesPanel() {
             + Nuevo Cliente
           </Button>
         </div>
+        
+        {connectionError && (
+          <OfflineMessage 
+            onRetry={fetchClientes}
+            message="No se pudieron cargar los clientes. Verifica la conexión al servidor."
+          />
+        )}
+        
         <DataTable
           columns={columns}
           data={filteredData}
