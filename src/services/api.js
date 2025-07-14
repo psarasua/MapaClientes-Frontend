@@ -2,7 +2,7 @@
 // Servicio centralizado para realizar peticiones HTTP al backend.
 // Usa fetch, variables de entorno para la URL base y maneja errores globalmente.
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://mapaclientesbackend.netlify.app/api';
 
 export async function apiFetch(endpoint, options = {}) {
   const url = `${API_BASE_URL}${endpoint}`;
