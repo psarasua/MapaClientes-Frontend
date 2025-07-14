@@ -6,7 +6,6 @@ import DiasEntregaPanel from "./components/diasEntrega/DiasEntregaPanel";
 import Menu from "./components/menu/MenuPrincipal";
 import { Toaster } from "sonner";
 import ConfiguracionPanel from "./components/configuracion/ConfiguracionPanel";
-import ConnectionStatus from "./components/ui/ConnectionStatus";
 import ErrorBoundary from "./components/ui/ErrorBoundary";
 
 const App = () => {
@@ -14,7 +13,6 @@ const App = () => {
     <ErrorBoundary>
       <BrowserRouter>
         <Menu />
-        <ConnectionStatus />
         <Toaster position="top-right" richColors />
         <Routes>
           <Route path="/clientes" element={<ClientesPanel />} />
