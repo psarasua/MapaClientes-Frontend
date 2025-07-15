@@ -58,20 +58,61 @@ const CamionesPanel = React.memo(function CamionesPanel() {
     async (e) => {
       e.preventDefault();
       setLoading(true);
-      if (editId) {
-        await apiFetch(`/camiones/${editId}`, {
-          method: "PUT",
-          body: JSON.stringify(form),
+      
+      // Validar que la descripción no esté vacía
+      if (!form.descripcion || form.descripcion.trim() === '') {
+        toast.error('La descripción es requerida', { 
+          closeButton: true,
+          duration: 3000 
         });
-      } else {
-        await apiFetch("/camiones", {
-          method: "POST",
-          body: JSON.stringify(form),
-        });
+        setLoading(false);
+        return;
       }
-      setForm({ descripcion: "" });
-      setEditId(null);
-      fetchCamiones();
+      
+      try {
+        console.log('Enviando datos:', form); // Debug
+        console.log('Edit ID:', editId); // Debug
+        
+        // Preparar los datos para enviar
+        const dataToSend = {
+          descripcion: form.descripcion.trim()
+        };
+        
+        console.log('Datos procesados para enviar:', dataToSend); // Debug
+        
+        if (editId) {
+          const response = await apiFetch(`/camiones/${editId}`, {
+            method: "PUT",
+            body: JSON.stringify(dataToSend),
+          });
+          console.log('Respuesta PUT:', response); // Debug
+          toast.success('Camión actualizado correctamente', { 
+            closeButton: true,
+            duration: 3000 
+          });
+        } else {
+          const response = await apiFetch("/camiones", {
+            method: "POST",
+            body: JSON.stringify(dataToSend),
+          });
+          console.log('Respuesta POST:', response); // Debug
+          toast.success('Camión agregado correctamente', { 
+            closeButton: true,
+            duration: 3000 
+          });
+        }
+        setForm({ descripcion: "" });
+        setEditId(null);
+        fetchCamiones();
+      } catch (error) {
+        console.error('Error al guardar camión:', error);
+        toast.error(`Error al ${editId ? 'actualizar' : 'agregar'} el camión: ${error.message}`, { 
+          closeButton: true,
+          duration: 5000 
+        });
+      } finally {
+        setLoading(false);
+      }
     },
     [editId, form, fetchCamiones]
   );
@@ -113,6 +154,12 @@ const CamionesPanel = React.memo(function CamionesPanel() {
   const handleEdit = useCallback((camion) => {
     setForm({ descripcion: camion.descripcion });
     setEditId(camion.id);
+  }, []);
+
+  // useCallback para cancelar la edición
+  const handleCancelEdit = useCallback(() => {
+    setForm({ descripcion: "" });
+    setEditId(null);
   }, []);
 
   // Columnas para TablaPanel
@@ -161,11 +208,23 @@ const CamionesPanel = React.memo(function CamionesPanel() {
             autoComplete="off"
           />
         </div>
-        <div className="col-md-4">
-          <button className="btn btn-primary w-100" type="submit">
+        <div className={editId ? "col-md-6" : "col-md-4"}>
+          <button className="btn btn-primary w-100" type="submit" disabled={loading}>
             {editId ? "Actualizar" : "Agregar"}
           </button>
         </div>
+        {editId && (
+          <div className="col-md-2">
+            <button 
+              className="btn btn-secondary w-100" 
+              type="button" 
+              onClick={handleCancelEdit}
+              aria-label="Cancelar edición"
+            >
+              Cancelar
+            </button>
+          </div>
+        )}
       </form>
       <TablaPanel
         columns={columns}
