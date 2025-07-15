@@ -142,8 +142,8 @@ const DiasEntregaPanel = React.memo(function DiasEntregaPanel() {
       </h2>
       <DiaEntregaFormulario
         form={form}
-        setForm={setForm}
-        handleSubmit={handleSubmit}
+        onChange={setForm}
+        onSubmit={handleSubmit}
         editId={editId}
         handleCancelEdit={handleCancelEdit}
       />

@@ -10,6 +10,7 @@ const DiaEntregaFormulario = React.memo(function DiaEntregaFormulario({
   editId,
   onChange,
   onSubmit,
+  handleCancelEdit,
   ariaLabelledby = "dias-entrega-titulo",
 }) {
   // Memoiza el handler de cambio de input
@@ -49,11 +50,24 @@ const DiaEntregaFormulario = React.memo(function DiaEntregaFormulario({
             autoComplete="off"
           />
         </Col>
-        <Col md={4}>
+        <Col md={editId ? 6 : 4}>
           <Button className="w-100" type="submit" variant="primary">
             {buttonText}
           </Button>
         </Col>
+        {editId && (
+          <Col md={2}>
+            <Button 
+              className="w-100" 
+              type="button" 
+              variant="secondary" 
+              onClick={handleCancelEdit}
+              aria-label="Cancelar edición"
+            >
+              Cancelar
+            </Button>
+          </Col>
+        )}
       </Row>
     </Form>
   );
