@@ -23,7 +23,9 @@ const DiasEntregaPanel = React.memo(function DiasEntregaPanel() {
   const fetchDias = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await apiFetch("/dias_entrega");
+      const response = await apiFetch("/dias-entrega");
+      console.log('Respuesta de la API:', response); // Para debugging
+      
       // Extraer datos de manera más robusta
       let diasData = [];
       if (Array.isArray(response)) {
@@ -31,7 +33,15 @@ const DiasEntregaPanel = React.memo(function DiasEntregaPanel() {
       } else if (response && response.data) {
         diasData = Array.isArray(response.data.data) ? response.data.data : 
                   Array.isArray(response.data) ? response.data : [];
+      } else if (response && typeof response === 'object') {
+        // Si la respuesta es un objeto, buscar propiedades que puedan contener los datos
+        const possibleArrays = Object.values(response).filter(Array.isArray);
+        if (possibleArrays.length > 0) {
+          diasData = possibleArrays[0];
+        }
       }
+      
+      console.log('Datos procesados:', diasData); // Para debugging
       setDias(diasData);
     } catch (error) {
       console.error('Error al obtener días de entrega:', error);
@@ -58,9 +68,14 @@ const DiasEntregaPanel = React.memo(function DiasEntregaPanel() {
       cancelButtonColor: '#6c757d',
     });
     if (result.isConfirmed) {
-      await apiFetch(`/dias_entrega/${id}`, { method: "DELETE" });
-      fetchDias();
-      MySwal.fire('Eliminado', 'El día de entrega fue eliminado correctamente.', 'success');
+      try {
+        await apiFetch(`/dias-entrega/${id}`, { method: "DELETE" });
+        fetchDias();
+        MySwal.fire('Eliminado', 'El día de entrega fue eliminado correctamente.', 'success');
+      } catch (error) {
+        console.error('Error al eliminar día de entrega:', error);
+        MySwal.fire('Error', 'No se pudo eliminar el día de entrega. Verifica tu conexión e intenta nuevamente.', 'error');
+      }
     }
   };
 
@@ -76,20 +91,25 @@ const DiasEntregaPanel = React.memo(function DiasEntregaPanel() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editId) {
-      await apiFetch(`/dias_entrega/${editId}`, {
-        method: "PUT",
-        body: JSON.stringify(form),
-      });
-    } else {
-      await apiFetch("/dias_entrega", {
-        method: "POST",
-        body: JSON.stringify(form),
-      });
+    try {
+      if (editId) {
+        await apiFetch(`/dias-entrega/${editId}`, {
+          method: "PUT",
+          body: JSON.stringify(form),
+        });
+      } else {
+        await apiFetch("/dias-entrega", {
+          method: "POST",
+          body: JSON.stringify(form),
+        });
+      }
+      fetchDias();
+      setForm({ descripcion: "" });
+      setEditId(null);
+    } catch (error) {
+      console.error('Error al guardar día de entrega:', error);
+      MySwal.fire('Error', 'No se pudo guardar el día de entrega. Verifica tu conexión e intenta nuevamente.', 'error');
     }
-    fetchDias();
-    setForm({ descripcion: "" });
-    setEditId(null);
   };
 
   // Columnas para TablaPanel
