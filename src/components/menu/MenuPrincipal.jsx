@@ -13,6 +13,7 @@ const MenuPrincipal = React.memo(function MenuPrincipal() {
   // Memoiza la lista de links del menú para evitar renders innecesarios
   const menuLinks = useMemo(
     () => [
+      { to: "/", label: "Dashboard" },
       { to: "/clientes", label: "Clientes" },
       { to: "/camiones", label: "Camiones" },
       { to: "/dias-entrega", label: "Días de Entrega" },
@@ -27,7 +28,7 @@ const MenuPrincipal = React.memo(function MenuPrincipal() {
       bg="dark"
       variant="dark"
       expand="lg"
-      className="mb-4"
+      className="mb-4 shadow-sm"
       role="navigation"
       aria-label="Menú principal"
     >

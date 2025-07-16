@@ -7,17 +7,37 @@ const API_BASE_URL =
 
 export async function apiFetch(endpoint, options = {}) {
   const url = `${API_BASE_URL}${endpoint}`;
+  
+  // Obtener token del localStorage si existe
+  const token = localStorage.getItem('token');
+  
+  // Preparar headers con autenticación si está disponible
+  const headers = {
+    "Content-Type": "application/json",
+    ...(options.headers || {}),
+  };
+  
+  // Agregar token de autorización si existe
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
 
   try {
     const response = await fetch(url, {
       ...options,
-      headers: {
-        "Content-Type": "application/json",
-        ...(options.headers || {}),
-      },
+      headers,
     });
 
     if (!response.ok) {
+      // Si el token expiró o es inválido, limpiar el localStorage
+      if (response.status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        // Recargar la página para mostrar el login
+        window.location.reload();
+        return;
+      }
+      
       const errorMsg = `Error ${response.status}: ${response.statusText}`;
       throw new Error(errorMsg);
     }
