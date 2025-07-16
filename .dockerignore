@@ -1,0 +1,14 @@
+# Archivos y directorios a ignorar en el despliegue
+node_modules
+.git
+.gitignore
+README.md
+.env
+.env.local
+.env.example
+*.log
+.DS_Store
+.vscode
+coverage
+.nyc_output
+.eslintcache

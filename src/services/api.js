@@ -3,7 +3,7 @@
 // Usa fetch, variables de entorno para la URL base y maneja errores globalmente.
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "https://mapas-clientes-backend.fly.dev/api";
+  import.meta.env.VITE_API_URL || "https://mapclientes-backend.fly.dev/api";
 
 export async function apiFetch(endpoint, options = {}) {
   const url = `${API_BASE_URL}${endpoint}`;
